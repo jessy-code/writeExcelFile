@@ -14,6 +14,11 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(isfile(file_path), True)
         remove(file_path)
 
+    def test_call(self):
+        file_path = 'unexisting/test.xlsx'
+        with (self.assertRaises(FileNotFoundError)):
+            e1 = ExcelFile(file_path)
+
     def test_load_excel_file(self):
         e1 = ExcelFile('test/test.xlsx')
         e1.load_excel_file()
@@ -42,6 +47,12 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(e1.excel_file['Sheet']['A3'].value, 'test3')
         self.assertEqual(e1.excel_file['Sheet']['B3'].value, 'test2')
         self.assertEqual(e1.excel_file['Sheet']['C3'].value, 'test3')
+
+        e1.write_list_in_line_of_sheet('Sheet', 7, ['test3', 'test2', 'test3'], start_column=5)
+        self.assertEqual(e1.excel_file['Sheet']['E7'].value, 'test3')
+        self.assertEqual(e1.excel_file['Sheet']['F7'].value, 'test2')
+        self.assertEqual(e1.excel_file['Sheet']['G7'].value, 'test3')
+
         remove(file_path)
 
 
