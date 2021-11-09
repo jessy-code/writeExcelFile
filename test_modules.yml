@@ -1,0 +1,44 @@
+- name: Test writeExcelFileLine module
+  hosts: all
+
+  tasks:
+
+    - name: Build the output file name with a timestamp
+      set_fact:
+        output_file_name: "{{'test_' + ansible_date_time['epoch'] + '.xlsx'}}"
+
+    - name: Create /tmp/test.xlsx file and write line 6 from column 4
+      writeExcelFileLine:
+        dest: "{{'/tmp/' + output_file_name}}"
+        sheet: 'Sheet'
+        line_number: 6
+        start_column: 4
+        line:
+          - 'test3'
+          - 'test2'
+          - 'test3'
+          - 'test4'
+
+    - name: Write line 5 from column 3 of already existing /tmp/test.xlsx file
+      writeExcelFileLine:
+        dest: "{{'/tmp/' + output_file_name}}"
+        sheet: 'Sheet'
+        line_number: 5
+        start_column: 3
+        line:
+          - 'test3'
+          - 'test2'
+          - 'test3'
+          - 'test4'
+
+    - name: Try to write test.xlsx file in unexisting folder
+      writeExcelFileLine:
+        dest: "{{'/unexisting/' + output_file_name}}"
+        sheet: 'Sheet'
+        line_number: 6
+        start_column: 4
+        line:
+          - 'test3'
+          - 'test2'
+          - 'test3'
+          - 'test4'
